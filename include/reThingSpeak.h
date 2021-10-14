@@ -37,7 +37,7 @@ bool tsTaskDelete();
  * EN: Adding a new channel to the list
  * RU: Добавление нового канала в список
  * 
- * @param tsKey - Channel token / Токен контроллера
+ * @param tsKey - Channel write token / Токен записи контроллера
  * @param tsInterval - Minimal interval / Минимальный интервал
  **/
 bool tsChannelInit(const char * tsKey, const uint32_t tsInterval);
@@ -51,10 +51,10 @@ bool tsChannelInit(const char * tsKey, const uint32_t tsInterval);
  * Если с момента последней отправки данных в контроллер прошло мало времени, то данные будут поставлены в очередь.
  * Если в очереди на данный контроллер уже есть данные, то они будут перезаписаны новыми данными.
  * 
- * @param tsId - Channel ID / Идентификатор контроллера
+ * @param tsKey - Channel write token / Токен записи контроллера
  * @param tsFields - Data in the format p1=... / Данные в формате p1=...
  **/
-bool tsSend(const uint32_t tsId, char * tsFields);
+bool tsSend(const char * tsKey, char * tsFields);
 
 /**
  * EN: Registering event handlers in the main event loop

@@ -19,9 +19,12 @@
 #include "def_consts.h"
 
 #define API_THINGSPEAK_HOST "thingspeak.com"
-#define API_THINGSPEAK_PORT 80
+#define API_THINGSPEAK_PORT 443
 #define API_THINGSPEAK_SEND_PATH "/update"
 #define API_THINGSPEAK_SEND_VALUES "api_key=%s&%s"
+
+extern const char api_thingspeak_com_pem_start[] asm(CONFIG_THINGSPEAK_TLS_PEM_START);
+extern const char api_thingspeak_com_pem_end[]   asm(CONFIG_THINGSPEAK_TLS_PEM_END); 
 
 typedef enum {
   TS_OK         = 0,
@@ -175,7 +178,9 @@ tsSendStatus_t tsSendEx(const tsChannelHandle_t ctrl)
     cfgHttp.path = API_THINGSPEAK_SEND_PATH;
     cfgHttp.query = get_request;
     cfgHttp.use_global_ca_store = false;
-    cfgHttp.transport_type = HTTP_TRANSPORT_OVER_TCP;
+    cfgHttp.transport_type = HTTP_TRANSPORT_OVER_SSL;
+    cfgHttp.cert_pem = api_thingspeak_com_pem_start;
+    cfgHttp.skip_cert_common_name_check = false;
     cfgHttp.is_async = false;
 
     // Make a request to the API
