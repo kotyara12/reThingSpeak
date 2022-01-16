@@ -13,6 +13,7 @@
 #include "rStrings.h"
 #include "esp_http_client.h"
 #include "reWiFi.h"
+#include "reEsp32.h"
 #include "reEvents.h"
 #include "reStates.h"
 #include "sys/queue.h"
@@ -72,7 +73,7 @@ uint8_t _tsQueueStorage [CONFIG_THINGSPEAK_QUEUE_SIZE * THINGSPEAK_QUEUE_ITEM_SI
 
 bool tsChannelsInit()
 {
-  _tsChannels = (tsHead_t*)calloc(1, sizeof(tsHead_t));
+  _tsChannels = (tsHead_t*)esp_calloc(1, sizeof(tsHead_t));
   if (_tsChannels) {
     SLIST_INIT(_tsChannels);
   };
@@ -90,7 +91,7 @@ bool tsChannelInit(const char * tsKey, const uint32_t tsInterval)
     return false;
   };
     
-  tsChannelHandle_t ctrl = (tsChannel_t*)calloc(1, sizeof(tsChannel_t));
+  tsChannelHandle_t ctrl = (tsChannel_t*)esp_calloc(1, sizeof(tsChannel_t));
   if (!ctrl) {
     rlog_e(logTAG, "Memory allocation error for data structure!");
     return false;
@@ -140,7 +141,7 @@ void tsChannelsFree()
 bool tsSend(const char * tsKey, char * tsFields)
 {
   if (_tsQueue) {
-    tsQueueItem_t* item = (tsQueueItem_t*)calloc(1, sizeof(tsQueueItem_t));
+    tsQueueItem_t* item = (tsQueueItem_t*)esp_calloc(1, sizeof(tsQueueItem_t));
     if (item) {
       item->key = tsKey;
       item->data = tsFields;
