@@ -433,9 +433,22 @@ static void tsWiFiEventHandler(void* arg, esp_event_base_t event_base, int32_t e
   };
 }
 
+static void tsOtaEventHandler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
+{
+  if ((event_id == RE_SYS_OTA) && (event_data)) {
+    re_system_event_data_t* data = (re_system_event_data_t*)event_data;
+    if (data->type == RE_SYS_SET) {
+      tsTaskSuspend();
+    } else {
+      tsTaskResume();
+    };
+  };
+}
+
 bool tsEventHandlerRegister()
 {
-  return eventHandlerRegister(RE_WIFI_EVENTS, RE_WIFI_STA_PING_OK, &tsWiFiEventHandler, nullptr);
+  return eventHandlerRegister(RE_WIFI_EVENTS, RE_WIFI_STA_PING_OK, &tsWiFiEventHandler, nullptr)
+      && eventHandlerRegister(RE_SYSTEM_EVENTS, RE_SYS_OTA, &tsOtaEventHandler, nullptr);
 };
 
 #endif // CONFIG_THINGSPEAK_ENABLE
