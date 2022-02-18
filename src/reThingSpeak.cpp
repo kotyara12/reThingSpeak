@@ -393,12 +393,12 @@ bool tsTaskCreate(bool createSuspended)
       if (createSuspended) {
         rloga_i("Task [ %s ] has been successfully created", tsTaskName);
         tsTaskSuspend();
-        return tsEventHandlerRegister();
+        eventLoopPostSystem(RE_SYS_THINGSPEAK_ERROR, RE_SYS_SET, false);
       } else {
         rloga_i("Task [ %s ] has been successfully started", tsTaskName);
         eventLoopPostSystem(RE_SYS_THINGSPEAK_ERROR, RE_SYS_CLEAR, false);
-        return true;
       };
+      return tsEventHandlerRegister();
     };
   };
   return false;
@@ -429,9 +429,7 @@ bool tsTaskDelete()
 static void tsWiFiEventHandler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
 {
   if (event_id == RE_WIFI_STA_PING_OK) {
-    if (!_tsTask) {
-      tsTaskCreate(false);
-    };
+    tsTaskResume();
   };
 }
 
