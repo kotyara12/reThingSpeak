@@ -23,6 +23,7 @@
 #define API_THINGSPEAK_PORT 443
 #define API_THINGSPEAK_SEND_PATH "/update"
 #define API_THINGSPEAK_SEND_VALUES "api_key=%s&%s"
+#define API_THINGSPEAK_TIMEOUT_MS 30000
 
 extern const char api_thingspeak_com_pem_start[] asm(CONFIG_THINGSPEAK_TLS_PEM_START);
 extern const char api_thingspeak_com_pem_end[]   asm(CONFIG_THINGSPEAK_TLS_PEM_END); 
@@ -177,6 +178,7 @@ tsSendStatus_t tsSendEx(const tsChannelHandle_t ctrl)
     cfgHttp.host = API_THINGSPEAK_HOST;
     cfgHttp.port = API_THINGSPEAK_PORT;
     cfgHttp.path = API_THINGSPEAK_SEND_PATH;
+    cfgHttp.timeout_ms = API_THINGSPEAK_TIMEOUT_MS;
     cfgHttp.query = get_request;
     cfgHttp.use_global_ca_store = false;
     cfgHttp.transport_type = HTTP_TRANSPORT_OVER_SSL;
@@ -190,7 +192,7 @@ tsSendStatus_t tsSendEx(const tsChannelHandle_t ctrl)
       esp_err_t err = esp_http_client_perform(client);
       if (err == ESP_OK) {
         int retCode = esp_http_client_get_status_code(client);
-        if ((retCode == 200) || (retCode == 301)) {
+        if ((retCode >= HttpStatus_Ok) && (retCode <= HttpStatus_BadRequest)) {
           _result = TS_OK;
           rlog_i(logTAG, "Data sent to %s: %s", ctrl->key, get_request);
         } else {
