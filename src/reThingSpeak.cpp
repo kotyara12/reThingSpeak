@@ -25,9 +25,6 @@
 #define API_THINGSPEAK_SEND_VALUES "api_key=%s&%s"
 #define API_THINGSPEAK_TIMEOUT_MS 30000
 
-extern const char api_thingspeak_com_pem_start[] asm(CONFIG_THINGSPEAK_TLS_PEM_START);
-extern const char api_thingspeak_com_pem_end[]   asm(CONFIG_THINGSPEAK_TLS_PEM_END); 
-
 typedef enum {
   TS_OK         = 0,
   TS_ERROR_API  = 1,
@@ -180,9 +177,8 @@ tsSendStatus_t tsSendEx(const tsChannelHandle_t ctrl)
     cfgHttp.path = API_THINGSPEAK_SEND_PATH;
     cfgHttp.timeout_ms = API_THINGSPEAK_TIMEOUT_MS;
     cfgHttp.query = get_request;
-    cfgHttp.use_global_ca_store = false;
     cfgHttp.transport_type = HTTP_TRANSPORT_OVER_SSL;
-    cfgHttp.cert_pem = api_thingspeak_com_pem_start;
+    cfgHttp.use_global_ca_store = true;
     cfgHttp.skip_cert_common_name_check = false;
     cfgHttp.is_async = false;
 
