@@ -1,5 +1,9 @@
 # reThingSpeak for ESP32
 
+### ВНИМАНИЕ ! УСТАРЕВШАЯ БИБЛИОТЕКА ! 
+### Теперь вместо нее следует использовать https://github.com/kotyara12/reDataSend
+---
+
 Sending sensor data to https://thingspeak.com/ with a specified interval and sending queue. For ESP32 only, since it was released as a FreeRTOS task and on ESP32-specific functions. Channel field values (data) are passed to the queue as a string (char*), which is automatically deleted after sending. That is, to send, you must place a line with data on the heap, and then send it to the library queue.
 
 ## Dependencies:
